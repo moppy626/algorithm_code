@@ -9,6 +9,15 @@ class MyAI(Alg3D):
 		player: int,
 		last_move: Tuple[int, int, int],
 	) -> Tuple[int, int]:
+		# 端っこが空いていたらとる
+		if board[0][0][0] == 0:
+			return (0, 0)
+		if board[0][3][0] == 0:
+			return (3, 0)
+		if board[0][3][3] == 0:
+			return (3, 3)
+		if board[0][0][3] == 0:
+			return (0, 3)
 		print("=== 盤面探索開始 ===")
 		for y in range(4):
 			for x in range(4):
