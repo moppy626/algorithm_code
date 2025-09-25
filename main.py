@@ -3,6 +3,34 @@ from local_driver import Alg3D, Board  # ローカル検証用
 # from framework import Alg3D, Board   # 提出時はこちら
 
 class MyAI(Alg3D):
+	DIRECTIONS = [
+		(1,0,0), (0,1,0), (0,0,1),
+		(1,1,0), (1,-1,0),
+		(1,0,1), (1,0,-1),
+		(0,1,1), (0,1,-1),
+		(1,1,1), (1,1,-1), (1,-1,1), (1,-1,-1),
+	]
+
+	def in_bounds(self, x:int,y:int,z:int)->bool:
+		return 0 <= x < 4 and 0 <= y < 4 and 0 <= z < 4
+
+	def iter_lines(self):
+		lines = []
+		for dx,dy,dz in self.DIRECTIONS:
+			for x0 in range(4):
+				for y0 in range(4):
+					for z0 in range(4):
+						# 逆方向に1マス進めるなら始点じゃない
+						px,py,pz = x0 - dx, y0 - dy, z0 - dz
+						if self.in_bounds(px,py,pz):
+							continue
+						# 4マス目の終点が盤外なら直線にならない
+						x3,y3,z3 = x0 + 3*dx, y0 + 3*dy, z0 + 3*dz
+						if self.in_bounds(x3,y3,z3):
+							line = [(x0 + i*dx, y0 + i*dy, z0 + i*dz) for i in range(4)]
+							lines.append(line)
+		return lines
+
 	def get_best_move(self, score_board: List[List[int]]) -> Tuple[int, int]:
 		# 4x4 の二次元配列から最大の点数を持つ (x, y) を返す
 		best_score = -10**9
@@ -34,97 +62,21 @@ class MyAI(Alg3D):
 		if board[0][0][3] == 0:
 			score_board[0][3]+=100
 		
-		#すべての直線をループ
-		for z in range(4):
-			for y in range(4):
-				for x in range(4):
-					#横方向
-					if x+3 < 4:
-						line = [board[z][y][x+i] for i in range(4)]
-						if line.count(1) == 3 and line.count(0) == 1:
-							score_board[y][x+line.index(0)] += 100
-						if line.count(2) == 3 and line.count(0) == 1:
-							score_board[y][x+line.index(0)] += 50
-					#縦方向
-					if y+3 < 4:
-						line = [board[z][y+i][x] for i in range(4)]
-						if line.count(1) == 3 and line.count(0) == 1:
-							score_board[y+line.index(0)][x] += 100
-						if line.count(2) == 3 and line.count(0) == 1:
-							score_board[y+line.index(0)][x] += 50
-					#奥行き方向
-					if z+3 < 4:
-						line = [board[z+i][y][x] for i in range(4)]
-						if line.count(1) == 3 and line.count(0) == 1:
-							score_board[y][x] += 100
-						if line.count(2) == 3 and line.count(0) == 1:
-							score_board[y][x] += 50
-					#斜め方向 xy平面
-					if x+3 < 4 and y+3 < 4:
-						line = [board[z][y+i][x+i] for i in range(4)]
-						if line.count(1) == 3 and line.count(0) == 1:
-							score_board[y+line.index(0)][x+line.index(0)] += 100
-						if line.count(2) == 3 and line.count(0) == 1:
-							score_board[y+line.index(0)][x+line.index(0)] += 50
-					if x-3 >= 0 and y+3 < 4:
-						line = [board[z][y+i][x-i] for i in range(4)]
-						if line.count(1) == 3 and line.count(0) == 1:
-							score_board[y+line.index(0)][x-line.index(0)] += 100
-						if line.count(2) == 3 and line.count(0) == 1:
-							score_board[y+line.index(0)][x-line.index(0)] += 50
-					#斜め方向 xz平面
-					if x+3 < 4 and z+3 < 4:
-						line = [board[z+i][y][x+i] for i in range(4)]
-						if line.count(1) == 3 and line.count(0) == 1:
-							score_board[y][x+line.index(0)] += 100
-						if line.count(2) == 3 and line.count(0) == 1:
-							score_board[y][x+line.index(0)] += 50
-					if x-3 >= 0 and z+3 < 4:
-						line = [board[z+i][y][x-i] for i in range(4)]
-						if line.count(1) == 3 and line.count(0) == 1:
-							score_board[y][x-line.index(0)] += 100
-						if line.count(2) == 3 and line.count(0) == 1:
-							score_board[y][x-line.index(0)] += 50
-					#斜め方向 yz平面
-					if y+3 < 4 and z+3 < 4:
-						line = [board[z+i][y+i][x] for i in range(4)]
-						if line.count(1) == 3 and line.count(0) == 1:
-							score_board[y+line.index(0)][x] += 100
-						if line.count(2) == 3 and line.count(0) == 1:
-							score_board[y+line.index(0)][x] += 50
-					if y-3 >= 0 and z+3 < 4:
-						line = [board[z+i][y-i][x] for i in range(4)]
-						if line.count(1) == 3 and line.count(0) == 1:
-							score_board[y-line.index(0)][x] += 100
-						if line.count(2) == 3 and line.count(0) == 1:
-							score_board[y-line.index(0)][x] += 50
-					#斜め方向 xyz空間
-					if x+3 < 4 and y+3 < 4 and z+3 < 4:
-						line = [board[z+i][y+i][x+i] for i in range(4)]
-						if line.count(1) == 3 and line.count(0) == 1:
-							score_board[y+line.index(0)][x+line.index(0)] += 100
-						if line.count(2) == 3 and line.count(0) == 1:
-							score_board[y+line.index(0)][x+line.index(0)] += 50
-					if x-3 >= 0 and y+3 < 4 and z+3 < 4:
-						line = [board[z+i][y+i][x-i] for i in range(4)]
-						if line.count(1) == 3 and line.count(0) == 1:
-							score_board[y+line.index(0)][x-line.index(0)] += 100
-						if line.count(2) == 3 and line.count(0) == 1:
-							score_board[y+line.index(0)][x-line.index(0)] += 50
-					if x+3 < 4 and y-3 >= 0 and z+3 < 4:
-						line = [board[z+i][y-i][x+i] for i in range(4)]
-						if line.count(1) == 3 and line.count(0) == 1:
-							score_board[y-line.index(0)][x+line.index(0)] += 100
-						if line.count(2) == 3 and line.count(0) == 1:
-							score_board[y-line.index(0)][x+line.index(0)] += 50
-					if x-3 >= 0 and y-3 >= 0 and z+3 < 4:
-						line = [board[z+i][y-i][x-i] for i in range(4)]
-						if line.count(1) == 3 and line.count(0) == 1:
-							score_board[y-line.index(0)][x-line.index(0)] += 100
-						if line.count(2) == 3 and line.count(0) == 1:
-							score_board[y-line.index(0)][x-line.index(0)] += 50			
-				
-
+		for line in self.iter_lines():
+			# 相手の石の数をカウント
+			enemy_count = 0
+			for idx, (x,y,z) in enumerate(line):
+				if (board[z][y][x] != 0 and board[z][y][x] != player):
+					enemy_count += 1
+			print("enemy_count:", enemy_count)
+			if (enemy_count >= 2):
+				for idx, (x,y,z) in enumerate(line):
+					if (board[z][y][x] == 0) and (z == 0 or board[z - 1][y][x] > 0):
+						# 相手の石が2つ以上あり、置ける状態の場合、重めに配点
+						if (enemy_count >= 3):
+							score_board[y][x]+= 1000
+						else:
+							score_board[y][x]+= 50
 
 		#すでに埋まっている箇所に-10**9を設定
 		print("=== 盤面探索開始 ===")
