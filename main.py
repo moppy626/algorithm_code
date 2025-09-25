@@ -1,36 +1,22 @@
 from typing import List, Tuple
-#from local_driver import Alg3D, Board # ローカル検証用
-from framework import Alg3D, Board # 本番用
+from local_driver import Alg3D, Board  # ローカル検証用
+# from framework import Alg3D, Board   # 提出時はこちら
 
 class MyAI(Alg3D):
-    def get_move(
-        self,
-        board: List[List[List[int]]], # 盤面情報
-        player: int, # 先手(黒):1 後手(白):2
-        last_move: Tuple[int, int, int] # 直前に置かれた場所(x, y, z)
-    ) -> Tuple[int, int]:
-        # 空いている座標を取得
-        moves = self.get_available_moves(board)
-        # とりあえず最初の候補を返す
-        if moves:
-            return moves[0][:2]  # (x, y) だけ返す
-        else:
-            raise ValueError("置ける場所がありません。")
+	def get_move(
+		self,
+		board: Board,
+		player: int,
+		last_move: Tuple[int, int, int],
+	) -> Tuple[int, int]:
+		print("=== 盤面探索開始 ===")
+		for y in range(4):
+			for x in range(4):
+				for z in range(4):
+					# 各 (x, y) の最下段セルを出力して確認
+					print(f"checking (x={x}, y={y}, z={z}): value={board[z][y][x]}")
+					if board[z][y][x] == 0:
+						print(f"--> 選択: (x={x}, y={y})")
+						return (x, y)
 
-    def get_available_moves(
-        self,
-        board: List[List[List[int]]]
-    ) -> List[Tuple[int, int, int]]:
-        """ 置ける場所(最下段の空き)を返す """
-        size_x = len(board)
-        size_y = len(board[0])
-        size_z = len(board[0][0])
-
-        available = []
-        for x in range(size_x):
-            for y in range(size_y):
-                for z in range(size_z):
-                    if board[x][y][z] == 0:  # 空き
-                        available.append((x, y, z))
-                        break  # 一番下の空きだけで良いのでbreak
-        return available
+		raise ValueError("置ける場所がありません。")
