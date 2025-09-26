@@ -98,7 +98,7 @@ class MyAI(Alg3D):
 							if (player_count == 1 and empty_count == 3):
 								score_board[y][x]+= 30
 							elif (player_count == 2 and empty_count == 2):
-								score_board[y][x]+= 10
+								score_board[y][x]+= 20
 							elif (player_count == 3 and empty_count == 1):
 								score_board[y][x]+= 10000
 							# 相手の石が3つあるときは重めに配点
@@ -106,7 +106,7 @@ class MyAI(Alg3D):
 								score_board[y][x]+= 1000
 							# 相手の石が2つあり残り2つが空の場合も重めに配点
 							elif (enemy_count == 2 and empty_count == 2):
-								score_board[y][x]+= 20
+								score_board[y][x]+= 30
 						# 石が置けない高さでも、置くと相手が上がってしまう場合は置かない
 						elif (board[z - 1][y][x] == 0):
 							if (enemy_count == 3 and empty_count == 1):
