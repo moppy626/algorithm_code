@@ -35,8 +35,8 @@ class MyAI(Alg3D):
 		# 4x4 の二次元配列から最大の点数を持つ (x, y) を返す
 		best_score = -10**9
 		best_move = (0, 0)
-		for y in range(4):
-			for x in range(4):
+		for y in range(3, -1, -1):
+			for x in range(3, -1, -1):
 				score = score_board[y][x]
 				if score > best_score:
 					best_score = score
@@ -51,6 +51,14 @@ class MyAI(Alg3D):
 	) -> Tuple[int, int]:
 
 		score_board = [[0]*4 for _ in range(4)]
+
+		#すでに埋まっている箇所に-10**9を設定
+		print("=== 盤面探索開始 ===")
+		for y in range(4):
+			for x in range(4):
+					if board[3][y][x] > 0:
+						score_board[y][x] = -10**9
+		x, y = self.get_best_move(score_board)
 
 		# 端っこが空いていたら重めに配点
 		if board[0][0][0] == 0:
@@ -88,7 +96,7 @@ class MyAI(Alg3D):
 							if (player_count == 1 and empty_count == 3):
 								score_board[y][x]+= 20
 							elif (player_count == 2 and empty_count == 2):
-								score_board[y][x]+= 50
+								score_board[y][x]+= 30
 							elif (player_count == 3 and empty_count == 1):
 								score_board[y][x]+= 10000
 							# 相手の石が3つあるときは重めに配点
@@ -96,21 +104,11 @@ class MyAI(Alg3D):
 								score_board[y][x]+= 1000
 							# 相手の石が2つあり残り2つが空の場合も重めに配点
 							elif (enemy_count == 2 and empty_count == 2):
-								score_board[y][x]+= 50
+								score_board[y][x]+= 30
 						# 石が置けない高さでも、置くと相手が上がってしまう場合は置かない
 						elif (board[z - 1][y][x] == 0):
 							if (enemy_count == 3):
 								score_board[y][x] = -10**9
-
-		#すでに埋まっている箇所に-10**9を設定
-		print("=== 盤面探索開始 ===")
-		for y in range(4):
-			for x in range(4):
-					if board[3][y][x] > 0:
-						score_board[y][x] = -10**9
-					# 各 (x, y) の最下段セルを出力して確認
-					#print(f"checking (x={x}, y={y}, z={z}): value={board[z][y][x]}")
-		x, y = self.get_best_move(score_board)
 		return (x, y)
 
 		raise ValueError("置ける場所がありません。")
