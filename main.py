@@ -77,22 +77,25 @@ class MyAI(Alg3D):
 			print("player_count:", player_count, "enemy_count:", enemy_count, "empty_count:", empty_count)
 			if (enemy_count >= 2):
 				for idx, (x,y,z) in enumerate(line):
-					# 何も置かれていない時だけ確認
+					# 対象に何も置かれていない時だけ確認
 					if (board[z][y][x] == 0):
 						# 石が置ける高さの場合
 						if (z == 0 or board[z - 1][y][x] > 0):
-							# 自分の石があるときは重めに配点
-							if (player_count == 1):
+							# 全部空の時は少し配点
+							if (empty_count == 4):
 								score_board[y][x]+= 10
-							elif (player_count == 2):
+							# 自分の石があるときは重めに配点
+							if (player_count == 1 and empty_count == 3):
+								score_board[y][x]+= 20
+							elif (player_count == 2 and empty_count == 2):
 								score_board[y][x]+= 50
-							elif (player_count == 3):
+							elif (player_count == 3 and empty_count == 1):
 								score_board[y][x]+= 10000
 							# 相手の石が3つあるときは重めに配点
-							if (enemy_count == 3):
+							if (enemy_count == 3 and empty_count == 1):
 								score_board[y][x]+= 1000
 							# 相手の石が2つあり残り2つが空の場合も重めに配点
-							elif (empty_count == 2):
+							elif (enemy_count == 2 and empty_count == 2):
 								score_board[y][x]+= 50
 						# 石が置けない高さでも、置くと相手が上がってしまう場合は置かない
 						elif (board[z - 1][y][x] == 0):
