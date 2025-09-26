@@ -52,14 +52,6 @@ class MyAI(Alg3D):
 
 		score_board = [[0]*4 for _ in range(4)]
 
-		#すでに埋まっている箇所に-10**9を設定
-		print("=== 盤面探索開始 ===")
-		for y in range(4):
-			for x in range(4):
-					if board[3][y][x] > 0:
-						score_board[y][x] = -10**9
-		x, y = self.get_best_move(score_board)
-
 		# 端っこが空いていたら重めに配点
 		if board[0][0][0] == 0:
 			score_board[0][0]+=100
@@ -109,6 +101,15 @@ class MyAI(Alg3D):
 						elif (board[z - 1][y][x] == 0):
 							if (enemy_count == 3):
 								score_board[y][x] = -10**9
+
+		#すでに埋まっている箇所に-10**9を設定
+		print("=== 盤面探索開始 ===")
+		for y in range(4):
+			for x in range(4):
+					if board[3][y][x] > 0:
+						score_board[y][x] = -10**9
+		x, y = self.get_best_move(score_board)
+
 		return (x, y)
 
 		raise ValueError("置ける場所がありません。")
