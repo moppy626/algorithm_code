@@ -63,29 +63,41 @@ class MyAI(Alg3D):
 			score_board[0][3]+=100
 		
 		for line in self.iter_lines():
-			# 相手の石の数をカウント
+			# 石の数をカウント
+			player_count = 0
 			enemy_count = 0
 			empty_count = 0
 			for idx, (x,y,z) in enumerate(line):
 				if (board[z][y][x] == 0):
 					empty_count += 1
-				elif (board[z][y][x] != player):
+				elif (board[z][y][x] == player):
+					player_count += 1
+				else:
 					enemy_count += 1
-			print("enemy_count:", enemy_count)
+			print("player_count:", player_count, "enemy_count:", enemy_count, "empty_count:", empty_count)
 			if (enemy_count >= 2):
 				for idx, (x,y,z) in enumerate(line):
-					# 石が置ける高さの場合
-					if (board[z][y][x] == 0) and (z == 0 or board[z - 1][y][x] > 0):
-						# 相手の石が3つあるときは重めに配点
-						if (enemy_count == 3):
-							score_board[y][x]+= 1000
-						# 相手の石が2つあり残り2つが空の場合も重めに配点
-						elif (empty_count == 2):
-							score_board[y][x]+= 50
-					# 石が置けない高さでも、置くと相手が上がってしまう場合は置かない
-					elif (enemy_count == 3):
-						if (board[z - 1][y][x] == 0):
-							score_board[y][x] = -10**9
+					# 何も置かれていない時だけ確認
+					if (board[z][y][x] == 0):
+						# 石が置ける高さの場合
+						if (z == 0 or board[z - 1][y][x] > 0):
+							# 自分の石があるときは重めに配点
+							if (player_count == 1)
+								score_board[y][x]+= 10
+							elif (player_count == 2)
+								score_board[y][x]+= 50
+							elif (player_count == 3)
+								score_board[y][x]+= 10000
+							# 相手の石が3つあるときは重めに配点
+							if (enemy_count == 3):
+								score_board[y][x]+= 1000
+							# 相手の石が2つあり残り2つが空の場合も重めに配点
+							elif (empty_count == 2):
+								score_board[y][x]+= 50
+						# 石が置けない高さでも、置くと相手が上がってしまう場合は置かない
+						elif (board[z - 1][y][x] == 0):
+							if (enemy_count == 3):
+								score_board[y][x] = -10**9
 
 		#すでに埋まっている箇所に-10**9を設定
 		print("=== 盤面探索開始 ===")
