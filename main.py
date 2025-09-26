@@ -62,15 +62,15 @@ class MyAI(Alg3D):
 
 		score_board = [[0]*4 for _ in range(4)]
 
-		# # 端っこが空いていたら重めに配点
-		# if board[0][0][0] == 0:
-		# 	score_board[0][0]+=10
-		# if board[0][3][0] == 0:
-		# 	score_board[3][0]+=10
-		# if board[0][3][3] == 0:
-		# 	score_board[3][3]+=10
-		# if board[0][0][3] == 0:
-		# 	score_board[0][3]+=10
+		# 端っこが空いていたら重めに配点
+		if board[0][0][0] == 0:
+			score_board[0][0]+=10
+		if board[0][3][0] == 0:
+			score_board[3][0]+=10
+		if board[0][3][3] == 0:
+			score_board[3][3]+=10
+		if board[0][0][3] == 0:
+			score_board[0][3]+=10
 		
 		for line in self.iter_lines():
 			# 石の数をカウント
@@ -103,7 +103,7 @@ class MyAI(Alg3D):
 								score_board[y][x]+= 10000
 							# 真ん中よりの場合は重めに配点
 							if (1 <= z <= 2 and 1 <= y <= 2 and 1 <= x <= 2):
-								score_board[y][x]+= 10
+								score_board[y][x]+= 30
 							# 相手の石が3つあるときは重めに配点
 							if (enemy_count == 3 and empty_count == 1):
 								score_board[y][x]+= 1000
