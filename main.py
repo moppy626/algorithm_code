@@ -64,13 +64,13 @@ class MyAI(Alg3D):
 
 		# 端っこが空いていたら重めに配点
 		if board[0][0][0] == 0:
-			score_board[0][0]+=100
+			score_board[0][0]+=10
 		if board[0][3][0] == 0:
-			score_board[3][0]+=100
+			score_board[3][0]+=10
 		if board[0][3][3] == 0:
-			score_board[3][3]+=100
+			score_board[3][3]+=10
 		if board[0][0][3] == 0:
-			score_board[0][3]+=100
+			score_board[0][3]+=10
 		
 		for line in self.iter_lines():
 			# 石の数をカウント
