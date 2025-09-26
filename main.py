@@ -82,6 +82,10 @@ class MyAI(Alg3D):
 						# 相手の石が2つあり残り2つが空の場合も重めに配点
 						elif (empty_count == 2):
 							score_board[y][x]+= 50
+					# 石が置けない高さでも、置くと相手が上がってしまう場合は置かない
+					elif (enemy_count == 3):
+						if (board[z - 1][y][x] == 0):
+							score_board[y][x] = -10**9
 
 		#すでに埋まっている箇所に-10**9を設定
 		print("=== 盤面探索開始 ===")
