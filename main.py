@@ -109,7 +109,7 @@ class MyAI(Alg3D):
 								score_board[y][x]+= 30
 						# 石が置けない高さでも、置くと相手が上がってしまう場合は置かない
 						elif (board[z - 1][y][x] == 0):
-							if (enemy_count == 3):
+							if (enemy_count == 3 and empty_count == 1):
 								score_board[y][x] = -10**9
 
 		#すでに埋まっている箇所に-10**9を設定
