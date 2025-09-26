@@ -65,17 +65,22 @@ class MyAI(Alg3D):
 		for line in self.iter_lines():
 			# 相手の石の数をカウント
 			enemy_count = 0
+			empty_count = 0
 			for idx, (x,y,z) in enumerate(line):
-				if (board[z][y][x] != 0 and board[z][y][x] != player):
+				if (board[z][y][x] == 0):
+					empty_count += 1
+				elif (board[z][y][x] != player):
 					enemy_count += 1
 			print("enemy_count:", enemy_count)
 			if (enemy_count >= 2):
 				for idx, (x,y,z) in enumerate(line):
+					# 石が置ける高さの場合
 					if (board[z][y][x] == 0) and (z == 0 or board[z - 1][y][x] > 0):
-						# 相手の石が2つ以上あり、置ける状態の場合、重めに配点
-						if (enemy_count >= 3):
+						# 相手の石が3つあるときは重めに配点
+						if (enemy_count == 3):
 							score_board[y][x]+= 1000
-						else:
+						# 相手の石が2つあり残り2つが空の場合も重めに配点
+						elif (empty_count == 2):
 							score_board[y][x]+= 50
 
 		#すでに埋まっている箇所に-10**9を設定
