@@ -31,14 +31,14 @@ class MyAI(Alg3D):
 							lines.append(line)
 		return lines
 
-	def get_empty(self):
+	def get_empty(self, board):
 		for y in range(3, -1, -1):
 			for x in range(3, -1, -1):
 				for z in range(3, -1, -1):
 					if board[z][y][x] == 0:
 						return (x, y)
 
-	def get_best_move(self, score_board: List[List[int]]) -> Tuple[int, int]:
+	def get_best_move(self, score_board: List[List[int]], board) -> Tuple[int, int]:
 		# 4x4 の二次元配列から最大の点数を持つ (x, y) を返す
 		best_score = -10**9
 		best_move = (0, 0)
@@ -49,8 +49,8 @@ class MyAI(Alg3D):
 					best_score = score
 					best_move = (x, y)
 
-		if best_score <= -10**9:  # 置ける場所が無い
-			return self.get_empty
+		if best_score <= -10**9:
+			return self.get_empty(board)
 		return best_move
 
 	def get_move(
@@ -118,7 +118,7 @@ class MyAI(Alg3D):
 			for x in range(4):
 					if board[3][y][x] > 0:
 						score_board[y][x] = -10**9
-		x, y = self.get_best_move(score_board)
+		x, y = self.get_best_move(score_board, board)
 
 		return (x, y)
 
