@@ -31,6 +31,13 @@ class MyAI(Alg3D):
 							lines.append(line)
 		return lines
 
+	def get_empty(self):
+		for y in range(3, -1, -1):
+			for x in range(3, -1, -1):
+				for z in range(3, -1, -1):
+					if board[z][y][x] == 0:
+						return (x, y)
+
 	def get_best_move(self, score_board: List[List[int]]) -> Tuple[int, int]:
 		# 4x4 の二次元配列から最大の点数を持つ (x, y) を返す
 		best_score = -10**9
@@ -41,6 +48,9 @@ class MyAI(Alg3D):
 				if score > best_score:
 					best_score = score
 					best_move = (x, y)
+
+		if best_score <= -10**9:  # 置ける場所が無い
+			return self.get_empty
 		return best_move
 
 	def get_move(
@@ -86,9 +96,9 @@ class MyAI(Alg3D):
 								score_board[y][x]+= 10
 							# 自分の石があるときは重めに配点
 							if (player_count == 1 and empty_count == 3):
-								score_board[y][x]+= 20
-							elif (player_count == 2 and empty_count == 2):
 								score_board[y][x]+= 30
+							elif (player_count == 2 and empty_count == 2):
+								score_board[y][x]+= 10
 							elif (player_count == 3 and empty_count == 1):
 								score_board[y][x]+= 10000
 							# 相手の石が3つあるときは重めに配点
@@ -111,6 +121,4 @@ class MyAI(Alg3D):
 		x, y = self.get_best_move(score_board)
 
 		return (x, y)
-
-		raise ValueError("置ける場所がありません。")
 
